@@ -1,6 +1,7 @@
 import pandas as pd
 from webscraping import done
 import csv
+import numpy as np  # Import numpy to handle NaN values
 
 # Read the CSV file into a DataFrame
 df = pd.read_csv('formlink.csv')
@@ -12,7 +13,7 @@ dictionary = {}
 
 # Scrape data and write it to a new CSV file
 with open("ranking.csv", "w", newline="") as csvfile:
-    rank_csv = csv.DictWriter(csvfile, fieldnames=["Name", "Total", "Rank"])
+    rank_csv = csv.DictWriter(csvfile, fieldnames=["Name", "Total"])
     rank_csv.writeheader()
     for i, j in zip(listmail, Name):
         try:
@@ -30,7 +31,8 @@ rank = pd.read_csv('ranking.csv')
 sorted_df = rank.sort_values(by="Total", ascending=False)
 
 # Add rank based on the sorted DataFrame
-sorted_df['Rank'] = sorted_df['Total'].rank(ascending=False, method='min').astype('Int64')
+sorted_df['Rank'] = sorted_df['Total'].rank(method='first', ascending=False)
+sorted_df['Rank'] = sorted_df['Rank'].fillna(0).astype(int)
 
 # Save the sorted DataFrame to a new CSV file
 sorted_df.to_csv('sorted_ranking.csv', index=False)
