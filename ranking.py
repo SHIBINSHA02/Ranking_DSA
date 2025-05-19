@@ -18,9 +18,12 @@ with open("ranking.csv", "w", newline="") as csvfile:
     for i, j in zip(listmail, Name):
         try:
             total = done(i)
-            dictionary[j] = total
-            rank_csv.writerow({"Name": j, "Total": total})
-            print(j, total)
+            if total is not None:  # Check if total is valid
+                dictionary[j] = total
+                rank_csv.writerow({"Name": j, "Total": total})
+                print(j, total)
+            else:
+                print(f"Failed to get total for {j}")
         except Exception as e:
             print(e)
 
